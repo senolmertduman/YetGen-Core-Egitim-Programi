@@ -1,0 +1,11 @@
+
+İsim: Şenol Mert 
+Soyisim: Duman
+Vki: 21.604938271604937
+Sınıf: Normal Kilolu
+----------
+İsim: İrem Yeliz
+Soyisim: Duman
+Vki: 21.484374999999996
+Sınıf: Normal Kilolu
+----------
