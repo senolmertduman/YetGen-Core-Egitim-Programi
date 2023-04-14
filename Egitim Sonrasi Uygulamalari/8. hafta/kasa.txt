@@ -6,3 +6,9 @@ Toplam fiyat = 45 TL
 İşlem saati = 14 : 50
 --------------
 
+3 tane elma = 15 TL
+3 tane muz = 30 TL
+Toplam fiyat = 45 TL
+İşlem tarihi = 2023-04-14
+İşlem saati = 15 : 32
+--------------
