@@ -1,5 +1,4 @@
 import pygame
-import time
 # pygame modullerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
 # pencere boyutunu ayarladik
@@ -30,13 +29,12 @@ class Button:
     # butonun cizilecegi pencereyi belirtecegiz.
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
-        font = pygame.font.Font(None, 36)
-        text = font.render(self.text, True, beyaz)
+        font = pygame.font.Font(None, 64)
+        text = font.render(self.text, True, siyah)
         text_rect = text.get_rect(center=self.rect.center)
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
-play_button = Button(400, 250, 200, 100, kirmizi, "PLAY")
-
+play_button = Button(400, 250, 200, 100, pembe, "PLAY GAME")
 # oyuncumuzu olusturmak icin sinif olusturduk
 class Oyuncu(pygame.sprite.Sprite):
     def __init__(self):
@@ -45,7 +43,9 @@ class Oyuncu(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottom = 520
         self.rect.centerx = 350
-        self.hiz = 10
+        self.hiz = 5
+        self.jump = False
+        self.jumpC = 10
     def update(self):
         tus = pygame.key.get_pressed()
         if tus[pygame.K_LEFT] and self.rect.left > 0:
@@ -56,35 +56,44 @@ class Oyuncu(pygame.sprite.Sprite):
             self.rect.y -= self.hiz
         elif tus[pygame.K_DOWN]:
             self.rect.y += self.hiz
-speed = 5
-jump = False
-jumpC = 10
+        if self.jump == False:
+            if tus[pygame.K_SPACE]:
+                self.jump = True
+        else:
+            if self.jumpC >= -10:
+                self.rect.y -= (self.jumpC * abs(self.jumpC)) * 0.5
+                self.jumpC -= 1
+            else:
+                self.jump = False
+                self.jumpC = 10
+
+#puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
 oyuncu = Oyuncu()
 oyuncu_grup = pygame.sprite.Group()
 oyuncu_grup.add(oyuncu)
 fps = 60
 saat = pygame.time.Clock()
-# ana oyun dongumuzu while dongusu ile olusturduk. 
+
+############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
     # bu kod sayesinde eger oyun kapatilirsa dongu sonlanacak ve oyundan cikilacaktir.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    # her dongude arka plan siyada boyanacak.
+    # her dongude arka plan pembeye boyanacak.
     screen.fill(pembe)
     # play butonunu cizdirdik
     play_button.draw(screen)
-
     #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik
     mouse_pos = pygame.mouse.get_pos()
     mouse_pressed = pygame.mouse.get_pressed()
-    # eger mouse play butonunun uzerindeyse ve mousenin sol tusuna iki kere basldiysa bu kod calisacak.
+    # eger mouse play butonunun uzerindeyse ve mousenin sol tusuna iki kere basildiysa bu kod calisacak.
     # Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
 
     if mouse_pressed[0] and play_button.rect.collidepoint(mouse_pos):
-        #1. pencere
+        ####### 1. PENCERE ##########
         kopek = pygame.image.load('dog.png')
         kopekC = kopek.get_rect()
         money = pygame.image.load('money.png')
@@ -97,41 +106,30 @@ while running:
         arka_plan1 = pygame.image.load('pencere1.jpeg')
         
         running1 = True
-
         while running1:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    running = False
                     running1 = False
-            tus = pygame.key.get_pressed()
-            if jump == False:
-                if tus[pygame.K_SPACE]:
-                    jump = True
-            else:
-                if jumpC >= -10:
-                    oyuncu.rect.y -= (jumpC * abs(jumpC)) * 0.5
-                    jumpC -= 1
-                else:
-                    jump = False
-                    jumpC = 10  
+
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
             pencere1.fill(siyah)
             pencere1.blit(arka_plan1,(0,0))
+#Oyuncu kopege temas ederse
             if oyuncu.rect.colliderect(kopekC):
-                point -= 1
                 font = pygame.font.SysFont("calibri", 64, True)
-                yazi = font.render('PUAN KAYBETTINIZ', True, (255,0,0), (0,255,0))
+                yazi = font.render('GAME OVER!', True, kirmizi)
                 yaziCd = yazi.get_rect()
                 yaziCd.center = (genislik/2, yukseklik/2)
                 pencere1.blit(yazi,yaziCd)
-                
-
+#oyuncu paraya temas ederse    
             if oyuncu.rect.colliderect(moneyC):
                 point += 1
                 moneyC.topleft = (1100,700)
-                
-            font = pygame.font.SysFont("calibri", 64, True)
-            skor = font.render(f'SKOR : {point}', True, (255,0,0), (0,255,0))
+#skor yazisi    
+            font = pygame.font.SysFont("calibri", 32, True)
+            skor = font.render(f'SKOR : {point}', True, siyah,beyaz)
             SKORc = skor.get_rect()
             SKORc.topleft = (0,0)
             pencere1.blit(skor,SKORc)
@@ -142,36 +140,24 @@ while running:
             pygame.display.update()
             saat.tick(fps)
             if oyuncu.rect.x > 700:
-        
-                #2. pencere kodlari
+############2. PENCERE KODLARI #######
                 oyuncu.rect.bottom = 520
                 oyuncu.rect.centerx = 100
                 pencere2 = pygame.display.set_mode((genislik,yukseklik))
                 arka_plan2 = pygame.image.load('pencere2.jpeg')
         
                 running2 = True
-
                 while running2:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
+                            running = False
+                            running1 = False
                             running2 = False
-                    tus = pygame.key.get_pressed()
-                    if jump == False:
-                        if tus[pygame.K_SPACE]:
-                            jump = True
-                    else:
-                        if jumpC >= -10:
-                            oyuncu.rect.y -= (jumpC * abs(jumpC)) * 0.5
-                            jumpC -= 1
-                        else:
-                            jump = False
-                            jumpC = 10
+
                     mouse_pos = pygame.mouse.get_pos()
                     mouse_pressed = pygame.mouse.get_pressed()
                     pencere2.fill(siyah)
                     pencere2.blit(arka_plan2,(0,0))
-
-                    
 
                     pencere2.blit(skor,SKORc)
                     oyuncu_grup.draw(pencere2)
@@ -179,35 +165,25 @@ while running:
                     pygame.display.update()
                     saat.tick(fps)
                     if oyuncu.rect.x > 900:
-                        # 3. pencere kodlari
+############ 3. PENCERE KODLARI #######
                         oyuncu.rect.bottom = 520
                         oyuncu.rect.centerx = 100
                         pencere3 = pygame.display.set_mode((genislik,yukseklik))
                         arka_plan3 = pygame.image.load('pencere3.jpeg')
         
                         running3 = True
-
                         while running3:
                             for event in pygame.event.get():
                                 if event.type == pygame.QUIT:
+                                    running = False
+                                    running1 = False
+                                    running2 = False
                                     running3 = False
-                            tus = pygame.key.get_pressed()
-                            if jump == False:
-                                if tus[pygame.K_SPACE]:
-                                    jump = True
-                            else:
-                                if jumpC >= -10:
-                                    oyuncu.rect.y -= (jumpC * abs(jumpC)) * 0.5
-                                    jumpC -= 1
-                                else:
-                                    jump = False
-                                    jumpC = 10
+
                             mouse_pos = pygame.mouse.get_pos()
                             mouse_pressed = pygame.mouse.get_pressed()
                             pencere3.fill(siyah)
                             pencere3.blit(arka_plan3,(0,0))
-
-                            
 
                             pencere3.blit(skor,SKORc)
                             oyuncu_grup.draw(pencere3)
@@ -215,29 +191,21 @@ while running:
                             pygame.display.update()
                             saat.tick(fps)
                             if oyuncu.rect.x > 900:
-                                #4. pencere kodlari
+############4. PENCERE KODLARI ##########
                                 oyuncu.rect.bottom = 520
                                 oyuncu.rect.centerx = 100
                                 pencere4 = pygame.display.set_mode((genislik,yukseklik))
                                 arka_plan4 = pygame.image.load('pencere4.jpeg')
         
                                 running4 = True
-
                                 while running4:
                                     for event in pygame.event.get():
                                         if event.type == pygame.QUIT:
+                                            running = False
+                                            running1 = False
+                                            running2 = False
+                                            running3 = False
                                             running4 = False
-                                    tus = pygame.key.get_pressed()
-                                    if jump == False:
-                                        if tus[pygame.K_SPACE]:
-                                            jump = True
-                                    else:
-                                        if jumpC >= -10:
-                                            oyuncu.rect.y -= (jumpC * abs(jumpC)) * 0.5
-                                            jumpC -= 1
-                                        else:
-                                            jump = False
-                                            jumpC = 10
                                     mouse_pos = pygame.mouse.get_pos()
                                     mouse_pressed = pygame.mouse.get_pressed()
                                     pencere4.fill(siyah)
@@ -247,7 +215,6 @@ while running:
                                     oyuncu_grup.update()
                                     pygame.display.update()
                                     saat.tick(fps)
-
     pygame.display.update()
 
 pygame.quit()
