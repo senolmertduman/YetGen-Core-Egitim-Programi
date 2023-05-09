@@ -1,13 +1,13 @@
 import pygame
 # pygame modullerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
-# pencere boyutunu ayarladik
+# pencere boyutu
 genislik = 1000
 yukseklik = 600
 screen = pygame.display.set_mode((genislik, yukseklik))
-# pencere ismini yazdik
+# pencere ismi
 pygame.display.set_caption("Team Spiderman Games")
-#oyunda kullanacagimiz renkleri tanimladik
+#######RENKLER#######
 siyah = (0, 0, 0)
 beyaz = (255, 255, 255)
 kirmizi = (255, 0, 0)
@@ -17,7 +17,23 @@ sari = (255, 255, 0)
 turuncu = (255, 165, 0)
 mor = (128, 0, 128)
 pembe = (255, 192, 203)
-# butonlarimizi olusturmak icin once sinif olusturduk sonra butonlarimizi olusturduk.
+koyu_portakal = (255, 140, 0)
+koyu_turkuaz = (0, 206, 209)
+lavanta = (230, 230, 250)
+sari_yesil = (173, 255, 47)
+sarisin = (255, 255, 240)
+orta_mor = (147, 112, 219)
+acik_deniz_yesili = (32, 178, 170)
+kahverengi = (240, 230, 140)
+koyu_portakal_kirmizi = (220, 20, 60)
+altin = (255, 215, 0)
+acik_yesil = (144, 238, 144)
+koyu_zeytin_yesili = (85, 107, 47)
+gumus = (192, 192, 192)
+orta_deniz_yesili = (60, 179, 113)
+koyu_mavi = (0, 0, 139)
+
+##BUTON SINIFI##
 class Button:
     # butonumuz icin x ekseni, y ekseni, yukseklik, genislik, renk ve yazi 
     # parametrelerini sinifimiza dahil ettik
@@ -30,12 +46,14 @@ class Button:
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
         font = pygame.font.Font(None, 64)
-        text = font.render(self.text, True, siyah)
+        text = font.render(self.text, True, siyah,gumus)
         text_rect = text.get_rect(center=self.rect.center)
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
-play_button = Button(400, 250, 200, 100, pembe, "PLAY GAME")
-# oyuncumuzu olusturmak icin sinif olusturduk
+play_button = Button(250, 250, 500, 100, lavanta, "PLAY GAME")
+#replay butonu
+replay_button = Button(250, 350, 500, 100, gumus, "REPLAY GAME")
+#########OYUNCU SINIFI####
 class Oyuncu(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -43,18 +61,18 @@ class Oyuncu(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottom = 520
         self.rect.centerx = 350
-        self.hiz = 5
+        self.hiz = 10
         self.jump = False
-        self.jumpC = 10
+        self.jumpC = 10  
     def update(self):
         tus = pygame.key.get_pressed()
         if tus[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.hiz
         elif tus[pygame.K_RIGHT] and self.rect.right < 1000:
             self.rect.x += self.hiz
-        elif tus[pygame.K_UP]:
+        elif tus[pygame.K_UP] and self.rect.bottom > 400:
             self.rect.y -= self.hiz
-        elif tus[pygame.K_DOWN]:
+        elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
             self.rect.y += self.hiz
         if self.jump == False:
             if tus[pygame.K_SPACE]:
@@ -66,9 +84,11 @@ class Oyuncu(pygame.sprite.Sprite):
             else:
                 self.jump = False
                 self.jumpC = 10
+                self.rect.bottom = 520
 
 #puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
+#oyuncu sinifimizdan bir karakter olusturduk
 oyuncu = Oyuncu()
 oyuncu_grup = pygame.sprite.Group()
 oyuncu_grup.add(oyuncu)
@@ -83,7 +103,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     # her dongude arka plan pembeye boyanacak.
-    screen.fill(pembe)
+    screen.fill(lavanta)
     # play butonunu cizdirdik
     play_button.draw(screen)
     #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik
@@ -93,7 +113,7 @@ while running:
     # Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
 
     if mouse_pressed[0] and play_button.rect.collidepoint(mouse_pos):
-        ####### 1. PENCERE ##########
+####### 1. PENCERE ##########
         kopek = pygame.image.load('dog.png')
         kopekC = kopek.get_rect()
         money = pygame.image.load('money.png')
@@ -119,10 +139,29 @@ while running:
 #Oyuncu kopege temas ederse
             if oyuncu.rect.colliderect(kopekC):
                 font = pygame.font.SysFont("calibri", 64, True)
-                yazi = font.render('GAME OVER!', True, kirmizi)
+                yazi = font.render('GAME OVER!', True, siyah)
                 yaziCd = yazi.get_rect()
                 yaziCd.center = (genislik/2, yukseklik/2)
-                pencere1.blit(yazi,yaziCd)
+                
+                pencere_go = pygame.display.set_mode((genislik,yukseklik))
+                running_kopek = True
+                while running_kopek:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            running = False
+                            running1 = False
+                            running_kopek = False
+                    pencere_go.fill(kirmizi)
+                    replay_button.draw(pencere_go)
+                    mouse_pos = pygame.mouse.get_pos()
+                    mouse_pressed = pygame.mouse.get_pressed()
+                    pencere_go.blit(yazi,yaziCd)
+                    if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
+                        oyuncu.rect.bottom = 520
+                        oyuncu.rect.centerx = 350 
+                        running1 = False
+                        running_kopek = False
+                    pygame.display.update()
 #oyuncu paraya temas ederse    
             if oyuncu.rect.colliderect(moneyC):
                 point += 1
