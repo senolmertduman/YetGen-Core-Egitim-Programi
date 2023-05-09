@@ -85,7 +85,8 @@ class Oyuncu(pygame.sprite.Sprite):
                 self.jump = False
                 self.jumpC = 10
                 self.rect.bottom = 520
-
+#kopek hareketi icin
+kopekYon = 'left'
 #puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
 #oyuncu sinifimizdan bir karakter olusturduk
@@ -136,6 +137,17 @@ while running:
             mouse_pressed = pygame.mouse.get_pressed()
             pencere1.fill(siyah)
             pencere1.blit(arka_plan1,(0,0))
+#kopek hareketi
+            if kopekYon == 'right' and kopekC.x < 650:
+                kopekC.x += 1
+                if kopekC.x == 650:
+                    kopekYon = 'left'
+                    kopek = pygame.image.load('dog.png')
+            elif kopekYon == 'left' and kopekC.x > 400:
+                kopekC.x-= 1
+                if kopekC.x == 400:
+                    kopekYon = 'right'
+                    kopek = pygame.image.load('dog2.png')
 #Oyuncu kopege temas ederse
             if oyuncu.rect.colliderect(kopekC):
                 font = pygame.font.SysFont("calibri", 64, True)
