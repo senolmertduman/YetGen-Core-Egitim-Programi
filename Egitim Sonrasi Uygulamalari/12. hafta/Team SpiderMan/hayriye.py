@@ -91,6 +91,8 @@ class Oyuncu(pygame.sprite.Sprite):
                 self.rect.bottom = 520
 #kopek hareketi icin
 kopekYon = 'left'
+#temizlikci hareketi icin
+temizliciYon = 'left'
 #puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
 #oyuncu sinifimizdan bir karakter olusturduk
@@ -200,6 +202,12 @@ while running:
                 oyuncu.rect.centerx = 100
                 pencere2 = pygame.display.set_mode((genislik,yukseklik))
                 arka_plan2 = pygame.image.load('pencere2.jpeg')
+
+                temizlikci = pygame.image.load('temizlikcisol.png')
+                temizlikciC = temizlikci.get_rect()
+
+                temizlikciC.bottom = 520
+                temizlikciC.centerx = 550 
         
                 running2 = True
                 while running2:
@@ -213,6 +221,19 @@ while running:
                     mouse_pressed = pygame.mouse.get_pressed()
                     pencere2.fill(siyah)
                     pencere2.blit(arka_plan2,(0,0))
+
+                    if temizliciYon == 'right' and temizlikciC.x < 650:
+                        temizlikciC.x += 1
+                        if temizlikciC.x == 650:
+                            temizliciYon = 'left'
+                            temizlikci = pygame.image.load('temizlikcisol.png')
+                    elif temizliciYon == 'left' and temizlikciC.x > 400:
+                        temizlikciC.x-= 1
+                        if temizlikciC.x == 400:
+                            temizliciYon = 'right'
+                            temizlikci = pygame.image.load('temizlikcisag.png')
+
+                    pencere2.blit(temizlikci,temizlikciC)
 
                     pencere2.blit(skor,SKORc)
                     oyuncu_grup.draw(pencere2)
