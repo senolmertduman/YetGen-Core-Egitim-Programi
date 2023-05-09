@@ -57,7 +57,7 @@ replay_button = Button(250, 350, 500, 100, gumus, "REPLAY GAME")
 class Oyuncu(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('asker.png')
+        self.image = pygame.image.load('hayriyesag.png')
         self.rect = self.image.get_rect()
         self.rect.bottom = 520
         self.rect.centerx = 350
@@ -68,8 +68,10 @@ class Oyuncu(pygame.sprite.Sprite):
         tus = pygame.key.get_pressed()
         if tus[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.hiz
+            self.image = pygame.image.load('hayriyesol.png')
         elif tus[pygame.K_RIGHT] and self.rect.right < 1000:
             self.rect.x += self.hiz
+            self.image = pygame.image.load('hayriyesag.png')
         elif tus[pygame.K_UP] and self.rect.bottom > 400:
             self.rect.y -= self.hiz
         elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
@@ -78,11 +80,13 @@ class Oyuncu(pygame.sprite.Sprite):
             if tus[pygame.K_SPACE]:
                 self.jump = True
         else:
+            oyuncu.image = pygame.image.load('hayriyezipla.png')
             if self.jumpC >= -10:
                 self.rect.y -= (self.jumpC * abs(self.jumpC)) * 0.5
                 self.jumpC -= 1
             else:
                 self.jump = False
+                oyuncu.image = pygame.image.load('hayriyesag.png')
                 self.jumpC = 10
                 self.rect.bottom = 520
 #kopek hareketi icin
