@@ -1,12 +1,12 @@
 import pygame
 from pygame.locals import *
-# pygame modullerini kullanabilmek icin init() fonksiyonunu yazdik.
+# Pygame modüllerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
-# pencere boyutunu ayarladik
+# Pencere boyutunu ayarladik
 genislik = 1000
 yukseklik = 600
 screen = pygame.display.set_mode((genislik, yukseklik))
-# pencere ismi
+# Pencere ismi belirledik
 pygame.display.set_caption("Team Spiderman Games")
 #######RENKLER#######
 siyah = (0, 0, 0)
@@ -33,18 +33,18 @@ koyu_zeytin_yesili = (85, 107, 47)
 gumus = (192, 192, 192)
 orta_deniz_yesili = (60, 179, 113)
 koyu_mavi = (0, 0, 139)
-##BUTON SINIFI##
+######BUTON SINIFI########
 class Button:
-    # butonumuz icin x ekseni, y ekseni, yukseklik, genislik, renk ve yazi 
-    # parametrelerini sinifimiza dahil ettik
+# butonumuz icin x ekseni, y ekseni, yukseklik, genislik, ana renk, arkaplan rengi, resim ismi ve yazi 
+# parametrelerini sinifimiza dahil ettik
     def __init__(self, x, y, width, height, color1, color2, image_name, text):
         self.rect = pygame.Rect(x, y, width, height)
         self.color1 = color1
         self.color2 = color2
         self.text = text
         self.image = pygame.image.load(image_name)
-    # butonumuzu cizecek ve ana pencereye ekleyecek fonksiyonu yazdik. Burada surface degiskeni ile 
-    # butonun cizilecegi pencereyi belirtecegiz.
+# butonumuzu olusturacak ve ana pencereye ekleyecek fonksiyonu yazdik. Burada surface degiskeni ile 
+# butonun eklenecegi pencereyi belirtecegiz.
     def draw(self, surface):
         pygame.draw.rect(surface, self.color1, self.rect)
         image_rect = self.image.get_rect(center = self.rect.center)
@@ -56,10 +56,11 @@ class Button:
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
 play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'cloud.png', "PLAY GAME")
-#replay butonu
+#game over ekranindaki oyuna yeniden donus icin replay replay butonunu olusturduk
 replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'cloud2.png', "REPLAY GAME")
 ###YAZI EKLEME SINIFI###
 class YaziEkle:
+#bu sinif vasitasi ile ekranda istedigimiz yere kolaylikla yazi ekleyebilecegiz.
     def __init__(self, x, y,  color1, color2, text,bold):
         self.rect = (x,y)
         self.color1 = color1
@@ -86,7 +87,7 @@ class Oyuncu(pygame.sprite.Sprite):
         self.jumpC = 10  
     def update(self):
         tus = pygame.key.get_pressed()
-        #saga,sola,yukari ve asagi hareket
+#saga,sola,yukari ve asagi hareket
         if tus[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.hiz
             self.image = pygame.image.load('hayriyesol.png')
@@ -97,7 +98,7 @@ class Oyuncu(pygame.sprite.Sprite):
             self.rect.y -= self.hiz
         elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
             self.rect.y += self.hiz
-        #ziplama fonksiyonu
+#ziplama fonksiyonu
         if self.jump == False:
             if tus[pygame.K_SPACE]:
                 self.jump = True
@@ -124,12 +125,12 @@ saat = pygame.time.Clock()
 font_box = pygame.font.Font(None, 32)
 input_box = pygame.Rect(430, 500, 140, 32)
 kullanici = ''
-#oyuncu adi: yazisi
+#Ana ekrandaki (oyuncu adi: ) yazisini olusturduk.
 oyuncu_adi = YaziEkle(400,450,gumus,None,'Oyuncu Adı: ',32)
 ############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
-    # bu kod sayesinde eger oyun kapatilirsa dongu sonlanacak ve oyundan cikilacaktir.
+# bu kod sayesinde eger oyun kapatilirsa dongu sonlanacak ve oyundan cikilacaktir.
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -140,25 +141,25 @@ while running:
                 kullanici = kullanici[:-1]
             else:
                 kullanici += event.unicode
-    # her dongude arka plan yesile boyanacak.
+# her dongude arka plan yesile boyanacak.
     screen.fill(acik_deniz_yesili)
-    # play butonunu cizdirdik
+# play butonunu cizdirdik.
     play_button.draw(screen)
 #INPUT KUTUSU
-    # input kutusu rengini ayarladik
+# input kutusu rengini ayarladik.
     pygame.draw.rect(screen, kirmizi, input_box, 2)
-    # input kutusu içindeki metni çiz
+# input kutusu içindeki metni olusturduk.
     txt_surface = font_box.render(kullanici, True, gumus)
     screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-    # input kutusunun sınırlarını çiz
+# input kutusunun sınırlarını cizdik.
     pygame.draw.rect(screen, gumus, input_box, 2)
-    #oyuncu adi yazisi
+#oyuncu adi yazisini ekrana ekledik.
     oyuncu_adi.draw(screen)
-    #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik
+#mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik.
     mouse_pos = pygame.mouse.get_pos()
     mouse_pressed = pygame.mouse.get_pressed()
-    # eger mouse play butonunun uzerindeyse ve mousenin sol tusuna iki kere basildiysa bu kod calisacak.
-    # Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
+# eger mouse play butonunun uzerindeyse ve mousenin sol tusuna iki kere basildiysa bu kod calisacak.
+# Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
     if mouse_pressed[0] and play_button.rect.collidepoint(mouse_pos):
 ####### 1. PENCERE ##########
         kopek = pygame.image.load('dog.png')
@@ -171,7 +172,6 @@ while running:
         kopekC.centerx = 550 
         pencere1 = pygame.display.set_mode((genislik,yukseklik))
         arka_plan1 = pygame.image.load('pencere1.jpeg')
-        
 #kopek hareketi icin yon belirledik
         kopekYon = 'left'
         
@@ -241,6 +241,12 @@ while running:
                 temizlikci = pygame.image.load('temizlikcisol.png')
                 temizlikciC = temizlikci.get_rect()
                 temizlikciC.topleft = (700,400) 
+                money2 = pygame.image.load('money.png')
+                money2C = money2.get_rect()
+                money2C.topleft = (360,400)
+                money3 = pygame.image.load('money.png')
+                money3C = money3.get_rect()
+                money3C.topleft = (700,400)
 #temizlikci hareketi icin yon belirledik
                 temizliciYon = 'left'
 
@@ -267,6 +273,13 @@ while running:
                     mouse_pressed = pygame.mouse.get_pressed()
                     pencere2.fill(siyah)
                     pencere2.blit(arka_plan2,(0,0))
+#paraya temas
+                    if oyuncu.rect.colliderect(money2C):
+                        point += 1
+                        money2C.topleft = (1100,700)
+                    if oyuncu.rect.colliderect(money3C):
+                        point += 1
+                        money3C.topleft = (1100,700)
 #temizlikci hareketi
                     if temizliciYon == 'right' and temizlikciC.x < 800:
                         temizlikciC.x += 1
@@ -280,6 +293,7 @@ while running:
                             temizlikci = pygame.image.load('temizlikcisag.png')
 #Oyuncu temizlikciye temas ederse game over penceresi acilacak
                     if oyuncu.rect.colliderect(temizlikciC):
+                        yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                         pencere_go = pygame.display.set_mode((genislik,yukseklik))
                         running_temizlikci = True
                         while running_temizlikci:
@@ -302,9 +316,11 @@ while running:
                                 running_temizlikci = False
                             pygame.display.update()
 #sifreyi bulmak icin anahtara temas edecek
-                    if oyuncu.rect.collidepoint(anahtar3C.topleft):
+                    if oyuncu.rect.colliderect(anahtar3C):
                         sifre = YaziEkle(650,100,kirmizi,None,'Oda numaran 103',32)
                         sifre.draw(pencere2)
+                    pencere2.blit(money2,money2C)
+                    pencere2.blit(money3,money3C)
                     pencere2.blit(temizlikci,temizlikciC)
                     gorev.draw(pencere2)
                     pencere2.blit(anahtar1,anahtar1C)
@@ -360,6 +376,33 @@ while running:
                                 if orumcekC.y == 550:
                                     orumcekYon = 'up'
                                     orumcek = pygame.image.load('spider.png')
+# oyuncu orumcege temas ederse
+                            if oyuncu.rect.colliderect(orumcekC):
+                                yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
+                                pencere_go = pygame.display.set_mode((genislik,yukseklik))
+                                running_orumcek = True
+                                while running_orumcek:
+                                    for event in pygame.event.get():
+                                        if event.type == pygame.QUIT:
+                                            running = False
+                                            running1 = False
+                                            running2 = False
+                                            running3 = False
+                                            running_orumcek = False
+                                    pencere_go.fill(kirmizi)
+                                    replay_button.draw(pencere_go)
+                                    mouse_pos = pygame.mouse.get_pos()
+                                    mouse_pressed = pygame.mouse.get_pressed()
+                                    yazi.draw(pencere_go)
+                                    if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
+                                        oyuncu.rect.bottom = 520
+                                        oyuncu.rect.centerx = 350 
+                                        running1 = False
+                                        running2 = False
+                                        running3 = False
+                                        running_orumcek = False
+                                    pygame.display.update()
+                            
                             pencere3.blit(su_birikintisi,su_birikintisiC)
                             pencere3.blit(muz,muzC)
                             pencere3.blit(orumcek,orumcekC)
