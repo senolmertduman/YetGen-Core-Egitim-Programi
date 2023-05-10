@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 # pygame modullerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
 # pencere boyutunu ayarladik
@@ -99,6 +100,15 @@ oyuncu_grup.add(oyuncu)
 #oyun hizimizi belirledik
 fps = 60
 saat = pygame.time.Clock()
+#input kutusu olusturduk
+font_box = pygame.font.Font(None, 32)
+input_box = pygame.Rect(430, 500, 140, 32)
+kullanici = ''
+#oyuncu adi: yazisi
+oyuncuadi_font = pygame.font.SysFont("calibri", 32, True)
+oyuncu_adi = oyuncuadi_font.render('Oyuncu Adı: ', True, siyah,gumus)
+oyuncuadiC = oyuncu_adi.get_rect()
+oyuncuadiC.topleft = (400,450)
 ############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
@@ -106,10 +116,27 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                kullanici = ''
+            elif event.key == pygame.K_BACKSPACE:
+                kullanici = kullanici[:-1]
+            else:
+                kullanici += event.unicode
     # her dongude arka plan pembeye boyanacak.
-    screen.fill(lavanta)
+    screen.fill(acik_deniz_yesili)
     # play butonunu cizdirdik
     play_button.draw(screen)
+#INPUT KUTUSU
+    # input kutusu rengini ayarladik
+    pygame.draw.rect(screen, kirmizi, input_box, 2)
+    # input kutusu içindeki metni çiz
+    txt_surface = font_box.render(kullanici, True, mavi)
+    screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+    # input kutusunun sınırlarını çiz
+    pygame.draw.rect(screen, (0, 0, 0), input_box, 2)
+    #oyuncu adi yazisi
+    screen.blit(oyuncu_adi,oyuncuadiC)
     #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik
     mouse_pos = pygame.mouse.get_pos()
     mouse_pressed = pygame.mouse.get_pressed()
@@ -346,6 +373,12 @@ while running:
                                 oyuncu.rect.centerx = 100
                                 pencere4 = pygame.display.set_mode((genislik,yukseklik))
                                 arka_plan4 = pygame.image.load('pencere4.jpeg')
+
+                                hosgeldin_font = pygame.font.SysFont("calibri", 32, True)
+# hosgeldin yazisi
+                                hosgeldin_yazi = hosgeldin_font.render(f'odana hosgeldin {kullanici}', True, siyah,sari)
+                                hosgeldinC = hosgeldin_yazi.get_rect()
+                                hosgeldinC.topleft = (450,100)
         
                                 running4 = True
                                 while running4:
@@ -361,6 +394,7 @@ while running:
                                     pencere4.fill(siyah)
                                     pencere4.blit(arka_plan4,(0,0))
                                     pencere4.blit(skor,SKORc)
+                                    pencere4.blit(hosgeldin_yazi,hosgeldinC)
                                     oyuncu_grup.draw(pencere4)
                                     oyuncu_grup.update()
                                     pygame.display.update()
