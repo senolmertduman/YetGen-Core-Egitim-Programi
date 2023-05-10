@@ -44,13 +44,13 @@ class Button:
     # butonumuzu cizecek ve ana pencereye ekleyecek fonksiyonu yazdik. Burada surface degiskeni ile 
     # butonun cizilecegi pencereyi belirtecegiz.
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        pygame.draw.ellipse(surface, self.color, self.rect)
         font = pygame.font.Font(None, 64)
         text = font.render(self.text, True, siyah,gumus)
         text_rect = text.get_rect(center=self.rect.center)
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
-play_button = Button(250, 250, 500, 100, lavanta, "PLAY GAME")
+play_button = Button(250, 250, 500, 100, gumus, "PLAY GAME")
 #replay butonu
 replay_button = Button(250, 350, 500, 100, gumus, "REPLAY GAME")
 #########OYUNCU SINIFI####
