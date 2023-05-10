@@ -37,22 +37,42 @@ koyu_mavi = (0, 0, 139)
 class Button:
     # butonumuz icin x ekseni, y ekseni, yukseklik, genislik, renk ve yazi 
     # parametrelerini sinifimiza dahil ettik
-    def __init__(self, x, y, width, height, color, text):
+    def __init__(self, x, y, width, height, color1, color2, image_name, text):
         self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
+        self.color1 = color1
+        self.color2 = color2
         self.text = text
+        self.image = pygame.image.load(image_name)
     # butonumuzu cizecek ve ana pencereye ekleyecek fonksiyonu yazdik. Burada surface degiskeni ile 
     # butonun cizilecegi pencereyi belirtecegiz.
     def draw(self, surface):
-        pygame.draw.ellipse(surface, self.color, self.rect)
-        font = pygame.font.Font(None, 64)
-        text = font.render(self.text, True, siyah,gumus)
+        pygame.draw.rect(surface, self.color1, self.rect)
+        image_rect = self.image.get_rect(center = self.rect.center)
+        
+        surface.blit(self.image, image_rect)
+        font = pygame.font.SysFont("calibri", 32, True)
+        text = font.render(self.text, True, self.color2)
         text_rect = text.get_rect(center=self.rect.center)
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
-play_button = Button(250, 250, 500, 100, gumus, "PLAY GAME")
+play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'cloud.png', "PLAY GAME")
 #replay butonu
-replay_button = Button(250, 350, 500, 100, gumus, "REPLAY GAME")
+replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'cloud2.png', "REPLAY GAME")
+###YAZI EKLEME SINIFI###
+class YaziEkle:
+    def __init__(self, x, y,  color1, color2, text,bold):
+        self.rect = (x,y)
+        self.color1 = color1
+        self.color2 = color2
+        self.text = text
+        self.bold = bold
+    def draw(self,surface):
+        font = pygame.font.SysFont("calibri", self.bold, True)
+        text = font.render(self.text, True, self.color1,self.color2)
+        text_rect = text.get_rect()
+        text_rect.topleft = self.rect
+        surface.blit(text, text_rect)
+
 #########OYUNCU SINIFI####
 class Oyuncu(pygame.sprite.Sprite):
     def __init__(self):
@@ -105,10 +125,7 @@ font_box = pygame.font.Font(None, 32)
 input_box = pygame.Rect(430, 500, 140, 32)
 kullanici = ''
 #oyuncu adi: yazisi
-oyuncuadi_font = pygame.font.SysFont("calibri", 32, True)
-oyuncu_adi = oyuncuadi_font.render('Oyuncu Adı: ', True, siyah,gumus)
-oyuncuadiC = oyuncu_adi.get_rect()
-oyuncuadiC.topleft = (400,450)
+oyuncu_adi = YaziEkle(400,450,gumus,None,'Oyuncu Adı: ',32)
 ############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
@@ -123,7 +140,7 @@ while running:
                 kullanici = kullanici[:-1]
             else:
                 kullanici += event.unicode
-    # her dongude arka plan pembeye boyanacak.
+    # her dongude arka plan yesile boyanacak.
     screen.fill(acik_deniz_yesili)
     # play butonunu cizdirdik
     play_button.draw(screen)
@@ -131,18 +148,17 @@ while running:
     # input kutusu rengini ayarladik
     pygame.draw.rect(screen, kirmizi, input_box, 2)
     # input kutusu içindeki metni çiz
-    txt_surface = font_box.render(kullanici, True, mavi)
+    txt_surface = font_box.render(kullanici, True, gumus)
     screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
     # input kutusunun sınırlarını çiz
-    pygame.draw.rect(screen, (0, 0, 0), input_box, 2)
+    pygame.draw.rect(screen, gumus, input_box, 2)
     #oyuncu adi yazisi
-    screen.blit(oyuncu_adi,oyuncuadiC)
+    oyuncu_adi.draw(screen)
     #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik
     mouse_pos = pygame.mouse.get_pos()
     mouse_pressed = pygame.mouse.get_pressed()
     # eger mouse play butonunun uzerindeyse ve mousenin sol tusuna iki kere basildiysa bu kod calisacak.
     # Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
-
     if mouse_pressed[0] and play_button.rect.collidepoint(mouse_pos):
 ####### 1. PENCERE ##########
         kopek = pygame.image.load('dog.png')
@@ -182,10 +198,7 @@ while running:
                     kopek = pygame.image.load('dog2.png')
 #Oyuncu kopege temas ederse game over penceresi acilacak
             if oyuncu.rect.colliderect(kopekC):
-                font = pygame.font.SysFont("calibri", 64, True)
-                yazi = font.render('GAME OVER!', True, siyah)
-                yaziCd = yazi.get_rect()
-                yaziCd.center = (genislik/2, yukseklik/2)
+                yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
                 running_kopek = True
                 while running_kopek:
@@ -196,9 +209,10 @@ while running:
                             running_kopek = False
                     pencere_go.fill(kirmizi)
                     replay_button.draw(pencere_go)
+                    yazi.draw(pencere_go)
                     mouse_pos = pygame.mouse.get_pos()
                     mouse_pressed = pygame.mouse.get_pressed()
-                    pencere_go.blit(yazi,yaziCd)
+                    
                     if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
                         oyuncu.rect.bottom = 520
                         oyuncu.rect.centerx = 350 
@@ -210,11 +224,8 @@ while running:
                 point += 1
                 moneyC.topleft = (1100,700)
 #skor yazisini ekrana ekledik    
-            font = pygame.font.SysFont("calibri", 32, True)
-            skor = font.render(f'SKOR : {point}', True, siyah,beyaz)
-            SKORc = skor.get_rect()
-            SKORc.topleft = (0,0)
-            pencere1.blit(skor,SKORc)
+            skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
+            skor.draw(pencere1)
             pencere1.blit(money,moneyC)
             pencere1.blit(kopek, kopekC)
             oyuncu_grup.draw(pencere1)
@@ -243,10 +254,7 @@ while running:
                 anahtar3C = anahtar3.get_rect()
                 anahtar3C.topleft = (700,300)
 #gorev yazisini ekrana ekledik
-                gorev_font = pygame.font.SysFont("calibri", 32, True)
-                gorev = gorev_font.render('ODA NUMARANI BUL', True, siyah,beyaz)
-                gorevC = gorev.get_rect()
-                gorevC.topright = (1000,0)
+                gorev = YaziEkle(650,10,siyah,None,'Oda numaranı bul!',32)
 
                 running2 = True
                 while running2:
@@ -272,10 +280,6 @@ while running:
                             temizlikci = pygame.image.load('temizlikcisag.png')
 #Oyuncu temizlikciye temas ederse game over penceresi acilacak
                     if oyuncu.rect.colliderect(temizlikciC):
-                        font = pygame.font.SysFont("calibri", 64, True)
-                        yazi = font.render('GAME OVER!', True, siyah)
-                        yaziCd = yazi.get_rect()
-                        yaziCd.center = (genislik/2, yukseklik/2)
                         pencere_go = pygame.display.set_mode((genislik,yukseklik))
                         running_temizlikci = True
                         while running_temizlikci:
@@ -289,7 +293,7 @@ while running:
                             replay_button.draw(pencere_go)
                             mouse_pos = pygame.mouse.get_pos()
                             mouse_pressed = pygame.mouse.get_pressed()
-                            pencere_go.blit(yazi,yaziCd)
+                            yazi.draw(pencere_go)
                             if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
                                 oyuncu.rect.bottom = 520
                                 oyuncu.rect.centerx = 350 
@@ -299,17 +303,14 @@ while running:
                             pygame.display.update()
 #sifreyi bulmak icin anahtara temas edecek
                     if oyuncu.rect.collidepoint(anahtar3C.topleft):
-                        sifre_font = pygame.font.SysFont("calibri", 32, True)
-                        sifre = sifre_font.render('ODA NUMARAN 103', True, siyah,beyaz)
-                        sifreC = sifre.get_rect()
-                        sifreC.center = (500,100)
-                        pencere2.blit(sifre,sifreC)
+                        sifre = YaziEkle(650,100,kirmizi,None,'Oda numaran 103',32)
+                        sifre.draw(pencere2)
                     pencere2.blit(temizlikci,temizlikciC)
-                    pencere2.blit(gorev,gorevC)
+                    gorev.draw(pencere2)
                     pencere2.blit(anahtar1,anahtar1C)
                     pencere2.blit(anahtar2,anahtar2C)
                     pencere2.blit(anahtar3,anahtar3C)
-                    pencere2.blit(skor,SKORc)
+                    skor.draw(pencere2)
                     oyuncu_grup.draw(pencere2)
                     oyuncu_grup.update()
                     pygame.display.update()
@@ -362,7 +363,7 @@ while running:
                             pencere3.blit(su_birikintisi,su_birikintisiC)
                             pencere3.blit(muz,muzC)
                             pencere3.blit(orumcek,orumcekC)
-                            pencere3.blit(skor,SKORc)
+                            skor.draw(pencere3)
                             oyuncu_grup.draw(pencere3)
                             oyuncu_grup.update()
                             pygame.display.update()
@@ -372,14 +373,10 @@ while running:
                                 oyuncu.rect.bottom = 520
                                 oyuncu.rect.centerx = 100
                                 pencere4 = pygame.display.set_mode((genislik,yukseklik))
-                                arka_plan4 = pygame.image.load('pencere4.jpeg')
-
-                                hosgeldin_font = pygame.font.SysFont("calibri", 32, True)
+                                arka_plan4 = pygame.image.load('pencere4.jpeg')              
 # hosgeldin yazisi
-                                hosgeldin_yazi = hosgeldin_font.render(f'odana hosgeldin {kullanici}', True, siyah,sari)
-                                hosgeldinC = hosgeldin_yazi.get_rect()
-                                hosgeldinC.topleft = (450,100)
-        
+                                hosgeldin_yazi = YaziEkle(450,100,beyaz,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
+                    
                                 running4 = True
                                 while running4:
                                     for event in pygame.event.get():
@@ -393,8 +390,8 @@ while running:
                                     mouse_pressed = pygame.mouse.get_pressed()
                                     pencere4.fill(siyah)
                                     pencere4.blit(arka_plan4,(0,0))
-                                    pencere4.blit(skor,SKORc)
-                                    pencere4.blit(hosgeldin_yazi,hosgeldinC)
+                                    skor.draw(pencere4)
+                                    hosgeldin_yazi.draw(pencere4)
                                     oyuncu_grup.draw(pencere4)
                                     oyuncu_grup.update()
                                     pygame.display.update()
