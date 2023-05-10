@@ -198,6 +198,7 @@ while running:
                     kopek = pygame.image.load('dog2.png')
 #Oyuncu kopege temas ederse game over penceresi acilacak
             if oyuncu.rect.colliderect(kopekC):
+                point = 0
                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
                 running_kopek = True
@@ -293,6 +294,7 @@ while running:
                             temizlikci = pygame.image.load('temizlikcisag.png')
 #Oyuncu temizlikciye temas ederse game over penceresi acilacak
                     if oyuncu.rect.colliderect(temizlikciC):
+                        point = 0
                         yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                         pencere_go = pygame.display.set_mode((genislik,yukseklik))
                         running_temizlikci = True
@@ -319,6 +321,7 @@ while running:
                     if oyuncu.rect.colliderect(anahtar3C):
                         sifre = YaziEkle(650,100,kirmizi,None,'Oda numaran 103',32)
                         sifre.draw(pencere2)
+                    skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
                     pencere2.blit(money2,money2C)
                     pencere2.blit(money3,money3C)
                     pencere2.blit(temizlikci,temizlikciC)
@@ -378,6 +381,7 @@ while running:
                                     orumcek = pygame.image.load('spider.png')
 # oyuncu orumcege temas ederse
                             if oyuncu.rect.colliderect(orumcekC):
+                                point = 0
                                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
                                 running_orumcek = True
