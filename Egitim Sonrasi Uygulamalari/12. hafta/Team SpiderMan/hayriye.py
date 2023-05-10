@@ -243,6 +243,33 @@ while running:
                         if temizlikciC.x == 600:
                             temizliciYon = 'right'
                             temizlikci = pygame.image.load('temizlikcisag.png')
+#Oyuncu temizlikciye temas ederse game over penceresi acilacak
+                    if oyuncu.rect.colliderect(temizlikciC):
+                        font = pygame.font.SysFont("calibri", 64, True)
+                        yazi = font.render('GAME OVER!', True, siyah)
+                        yaziCd = yazi.get_rect()
+                        yaziCd.center = (genislik/2, yukseklik/2)
+                        pencere_go = pygame.display.set_mode((genislik,yukseklik))
+                        running_temizlikci = True
+                        while running_temizlikci:
+                            for event in pygame.event.get():
+                                if event.type == pygame.QUIT:
+                                    running = False
+                                    running1 = False
+                                    running2 = False
+                                    running_temizlikci = False
+                            pencere_go.fill(kirmizi)
+                            replay_button.draw(pencere_go)
+                            mouse_pos = pygame.mouse.get_pos()
+                            mouse_pressed = pygame.mouse.get_pressed()
+                            pencere_go.blit(yazi,yaziCd)
+                            if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
+                                oyuncu.rect.bottom = 520
+                                oyuncu.rect.centerx = 350 
+                                running1 = False
+                                running2 = False
+                                running_temizlikci = False
+                            pygame.display.update()
 #sifreyi bulmak icin anahtara temas edecek
                     if oyuncu.rect.collidepoint(anahtar3C.topleft):
                         sifre_font = pygame.font.SysFont("calibri", 32, True)
@@ -292,7 +319,7 @@ while running:
                             pencere3.fill(siyah)
                             pencere3.blit(arka_plan3,(0,0))
 #oyuncu muza temas ederse 100 pixel ileri kayacak
-                            if oyuncu.rect.collidepoint(muzC.topleft):
+                            if oyuncu.rect.colliderect(muzC):
                                 oyuncu.rect.x +=100
 #orumcek hareketi
                             if orumcekYon == 'up' and orumcekC.y > 350:
