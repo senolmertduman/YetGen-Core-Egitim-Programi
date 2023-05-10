@@ -406,7 +406,7 @@ while running:
                                         running3 = False
                                         running_orumcek = False
                                     pygame.display.update()
-                            
+                            skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
                             pencere3.blit(su_birikintisi,su_birikintisiC)
                             pencere3.blit(muz,muzC)
                             pencere3.blit(orumcek,orumcekC)
@@ -437,6 +437,7 @@ while running:
                                     mouse_pressed = pygame.mouse.get_pressed()
                                     pencere4.fill(siyah)
                                     pencere4.blit(arka_plan4,(0,0))
+                                    skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
                                     skor.draw(pencere4)
                                     hosgeldin_yazi.draw(pencere4)
                                     oyuncu_grup.draw(pencere4)
