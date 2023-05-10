@@ -1,7 +1,7 @@
 import pygame
 # pygame modullerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
-# pencere boyutu
+# pencere boyutunu ayarladik
 genislik = 1000
 yukseklik = 600
 screen = pygame.display.set_mode((genislik, yukseklik))
@@ -32,7 +32,6 @@ koyu_zeytin_yesili = (85, 107, 47)
 gumus = (192, 192, 192)
 orta_deniz_yesili = (60, 179, 113)
 koyu_mavi = (0, 0, 139)
-
 ##BUTON SINIFI##
 class Button:
     # butonumuz icin x ekseni, y ekseni, yukseklik, genislik, renk ve yazi 
@@ -66,6 +65,7 @@ class Oyuncu(pygame.sprite.Sprite):
         self.jumpC = 10  
     def update(self):
         tus = pygame.key.get_pressed()
+        #saga,sola,yukari ve asagi hareket
         if tus[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.hiz
             self.image = pygame.image.load('hayriyesol.png')
@@ -76,6 +76,7 @@ class Oyuncu(pygame.sprite.Sprite):
             self.rect.y -= self.hiz
         elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
             self.rect.y += self.hiz
+        #ziplama fonksiyonu
         if self.jump == False:
             if tus[pygame.K_SPACE]:
                 self.jump = True
@@ -89,19 +90,15 @@ class Oyuncu(pygame.sprite.Sprite):
                 oyuncu.image = pygame.image.load('hayriyesag.png')
                 self.jumpC = 10
                 self.rect.bottom = 520
-#kopek hareketi icin
-kopekYon = 'left'
-#temizlikci hareketi icin
-temizliciYon = 'left'
 #puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
 #oyuncu sinifimizdan bir karakter olusturduk
 oyuncu = Oyuncu()
 oyuncu_grup = pygame.sprite.Group()
 oyuncu_grup.add(oyuncu)
+#oyun hizimizi belirledik
 fps = 60
 saat = pygame.time.Clock()
-
 ############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
@@ -132,13 +129,15 @@ while running:
         pencere1 = pygame.display.set_mode((genislik,yukseklik))
         arka_plan1 = pygame.image.load('pencere1.jpeg')
         
+#kopek hareketi icin yon belirledik
+        kopekYon = 'left'
+        
         running1 = True
         while running1:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     running1 = False
-
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
             pencere1.fill(siyah)
@@ -154,13 +153,12 @@ while running:
                 if kopekC.x == 400:
                     kopekYon = 'right'
                     kopek = pygame.image.load('dog2.png')
-#Oyuncu kopege temas ederse
+#Oyuncu kopege temas ederse game over penceresi acilacak
             if oyuncu.rect.colliderect(kopekC):
                 font = pygame.font.SysFont("calibri", 64, True)
                 yazi = font.render('GAME OVER!', True, siyah)
                 yaziCd = yazi.get_rect()
                 yaziCd.center = (genislik/2, yukseklik/2)
-                
                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
                 running_kopek = True
                 while running_kopek:
@@ -180,11 +178,11 @@ while running:
                         running1 = False
                         running_kopek = False
                     pygame.display.update()
-#oyuncu paraya temas ederse    
+#oyuncu paraya temas ederse puan 1 artacak   
             if oyuncu.rect.colliderect(moneyC):
                 point += 1
                 moneyC.topleft = (1100,700)
-#skor yazisi    
+#skor yazisini ekrana ekledik    
             font = pygame.font.SysFont("calibri", 32, True)
             skor = font.render(f'SKOR : {point}', True, siyah,beyaz)
             SKORc = skor.get_rect()
@@ -202,13 +200,27 @@ while running:
                 oyuncu.rect.centerx = 100
                 pencere2 = pygame.display.set_mode((genislik,yukseklik))
                 arka_plan2 = pygame.image.load('pencere2.jpeg')
-
                 temizlikci = pygame.image.load('temizlikcisol.png')
                 temizlikciC = temizlikci.get_rect()
+                temizlikciC.topleft = (700,400) 
+#temizlikci hareketi icin yon belirledik
+                temizliciYon = 'left'
 
-                temizlikciC.bottom = 520
-                temizlikciC.centerx = 550 
-        
+                anahtar1 = pygame.image.load('key.png')
+                anahtar2 = pygame.image.load('key.png')
+                anahtar3 = pygame.image.load('key.png')
+                anahtar1C = anahtar1.get_rect()
+                anahtar1C.topleft = (100,300)
+                anahtar2C = anahtar2.get_rect()
+                anahtar2C.topleft = (360,300)
+                anahtar3C = anahtar3.get_rect()
+                anahtar3C.topleft = (700,300)
+#gorev yazisini ekrana ekledik
+                gorev_font = pygame.font.SysFont("calibri", 32, True)
+                gorev = gorev_font.render('ODA NUMARANI BUL', True, siyah,beyaz)
+                gorevC = gorev.get_rect()
+                gorevC.topright = (1000,0)
+
                 running2 = True
                 while running2:
                     for event in pygame.event.get():
@@ -216,25 +228,33 @@ while running:
                             running = False
                             running1 = False
                             running2 = False
-
                     mouse_pos = pygame.mouse.get_pos()
                     mouse_pressed = pygame.mouse.get_pressed()
                     pencere2.fill(siyah)
                     pencere2.blit(arka_plan2,(0,0))
-
-                    if temizliciYon == 'right' and temizlikciC.x < 650:
+#temizlikci hareketi
+                    if temizliciYon == 'right' and temizlikciC.x < 800:
                         temizlikciC.x += 1
-                        if temizlikciC.x == 650:
+                        if temizlikciC.x == 800:
                             temizliciYon = 'left'
                             temizlikci = pygame.image.load('temizlikcisol.png')
-                    elif temizliciYon == 'left' and temizlikciC.x > 400:
+                    elif temizliciYon == 'left' and temizlikciC.x > 600:
                         temizlikciC.x-= 1
-                        if temizlikciC.x == 400:
+                        if temizlikciC.x == 600:
                             temizliciYon = 'right'
                             temizlikci = pygame.image.load('temizlikcisag.png')
-
+#sifreyi bulmak icin anahtara temas edecek
+                    if oyuncu.rect.collidepoint(anahtar3C.topleft):
+                        sifre_font = pygame.font.SysFont("calibri", 32, True)
+                        sifre = sifre_font.render('ODA NUMARAN 103', True, siyah,beyaz)
+                        sifreC = sifre.get_rect()
+                        sifreC.center = (500,100)
+                        pencere2.blit(sifre,sifreC)
                     pencere2.blit(temizlikci,temizlikciC)
-
+                    pencere2.blit(gorev,gorevC)
+                    pencere2.blit(anahtar1,anahtar1C)
+                    pencere2.blit(anahtar2,anahtar2C)
+                    pencere2.blit(anahtar3,anahtar3C)
                     pencere2.blit(skor,SKORc)
                     oyuncu_grup.draw(pencere2)
                     oyuncu_grup.update()
@@ -246,7 +266,19 @@ while running:
                         oyuncu.rect.centerx = 100
                         pencere3 = pygame.display.set_mode((genislik,yukseklik))
                         arka_plan3 = pygame.image.load('pencere3.jpeg')
-        
+                        muz = pygame.image.load('banana.png')
+                        muzC = muz.get_rect()
+                        muzC.topleft = (200,400)
+                        orumcek = pygame.image.load('spider.png')
+                        orumcekC = orumcek.get_rect()
+                        orumcekC.topleft = (300,400)
+#orumcek hareketi icin yon belirledik
+                        orumcekYon = 'up'
+
+                        su_birikintisi = pygame.image.load('puddle.png')
+                        su_birikintisiC = su_birikintisi.get_rect()
+                        su_birikintisiC.topleft = (600,500)
+                        
                         running3 = True
                         while running3:
                             for event in pygame.event.get():
@@ -255,12 +287,27 @@ while running:
                                     running1 = False
                                     running2 = False
                                     running3 = False
-
                             mouse_pos = pygame.mouse.get_pos()
                             mouse_pressed = pygame.mouse.get_pressed()
                             pencere3.fill(siyah)
                             pencere3.blit(arka_plan3,(0,0))
-
+#oyuncu muza temas ederse 100 pixel ileri kayacak
+                            if oyuncu.rect.collidepoint(muzC.topleft):
+                                oyuncu.rect.x +=100
+#orumcek hareketi
+                            if orumcekYon == 'up' and orumcekC.y > 350:
+                                orumcekC.y -= 1
+                                if orumcekC.y == 350:
+                                    orumcekYon = 'down'
+                                    orumcek = pygame.image.load('spider2.png')
+                            elif orumcekYon == 'down' and orumcekC.y < 600:
+                                orumcekC.y += 1
+                                if orumcekC.y == 550:
+                                    orumcekYon = 'up'
+                                    orumcek = pygame.image.load('spider.png')
+                            pencere3.blit(su_birikintisi,su_birikintisiC)
+                            pencere3.blit(muz,muzC)
+                            pencere3.blit(orumcek,orumcekC)
                             pencere3.blit(skor,SKORc)
                             oyuncu_grup.draw(pencere3)
                             oyuncu_grup.update()
