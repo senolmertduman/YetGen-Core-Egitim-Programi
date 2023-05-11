@@ -212,6 +212,8 @@ while running:
                     kopek = pygame.image.load('dog2.png')
 #Oyuncu kopege temas ederse game over penceresi acilacak
             if oyuncu.rect.colliderect(kopekC):
+                pygame.mixer.music.load("gameoverses.wav")
+                pygame.mixer.music.play(1,0.0)
                 point = 0
                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
@@ -236,6 +238,8 @@ while running:
                     pygame.display.update()
 #oyuncu paraya temas ederse puan 1 artacak   
             if oyuncu.rect.colliderect(moneyC):
+                pygame.mixer.music.load("odulses.wav")
+                pygame.mixer.music.play(1,0.0)
                 point += 1
                 moneyC.topleft = (1100,700)
 #skor yazisini ekrana ekledik    
@@ -290,9 +294,13 @@ while running:
                     pencere2.blit(arka_plan2,(0,0))
 #paraya temas
                     if oyuncu.rect.colliderect(money2C):
+                        pygame.mixer.music.load("odulses.wav")
+                        pygame.mixer.music.play(1,0.0)
                         point += 1
                         money2C.topleft = (1100,700)
                     if oyuncu.rect.colliderect(money3C):
+                        pygame.mixer.music.load("odulses.wav")
+                        pygame.mixer.music.play(1,0.0)
                         point += 1
                         money3C.topleft = (1100,700)
 #temizlikci hareketi
@@ -308,6 +316,8 @@ while running:
                             temizlikci = pygame.image.load('temizlikcisag.png')
 #Oyuncu temizlikciye temas ederse game over penceresi acilacak
                     if oyuncu.rect.colliderect(temizlikciC):
+                        pygame.mixer.music.load("gameoverses.wav")
+                        pygame.mixer.music.play(1,0.0)
                         point = 0
                         yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                         pencere_go = pygame.display.set_mode((genislik,yukseklik))
@@ -382,6 +392,8 @@ while running:
                             pencere3.blit(arka_plan3,(0,0))
 #oyuncu paraya temas ederse
                             if oyuncu.rect.colliderect(money4C):
+                                pygame.mixer.music.load("odulses.wav")
+                                pygame.mixer.music.play(1,0.0)
                                 point += 1
                                 money4C.topleft = (1100,700)
 #oyuncu muza temas ederse 100 pixel ileri kayacak
@@ -400,6 +412,8 @@ while running:
                                     orumcek = pygame.image.load('spider.png')
 # oyuncu orumcege temas ederse
                             if oyuncu.rect.colliderect(orumcekC):
+                                pygame.mixer.music.load("gameoverses.wav")
+                                pygame.mixer.music.play(1,0.0)
                                 point = 0
                                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                                 pencere_go = pygame.display.set_mode((genislik,yukseklik))
@@ -477,10 +491,14 @@ while running:
                                             goblin = pygame.image.load('goblinsag.png')
 #oyuncu paraya temas ederse
                                     if oyuncu.rect.colliderect(money5C):
+                                        pygame.mixer.music.load("odulses.wav")
+                                        pygame.mixer.music.play(1,0.0)
                                         point += 1
                                         money5C.topleft = (1100,700)
 #oyuncu gobline temas ederse
                                     if oyuncu.rect.colliderect(goblinC):
+                                        pygame.mixer.music.load("gameoverses.wav")
+                                        pygame.mixer.music.play(1,0.0)
                                         point = 0
                                         yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
                                         pencere_go = pygame.display.set_mode((genislik,yukseklik))
@@ -511,6 +529,8 @@ while running:
                                             pygame.display.update()
 #oyuncu oda kapisina temas ederse kazanacak
                                     if oyuncu.rect.colliderect((890,180,100,200)):
+                                        pygame.mixer.music.load("winses.wav")
+                                        pygame.mixer.music.play(1,0.0)
                                         pencere_win = pygame.display.set_mode((genislik,yukseklik))
                                         arkaplan_win = pygame.image.load('win.jpeg')
                                         yildiz1 = pygame.image.load('star2.png')
