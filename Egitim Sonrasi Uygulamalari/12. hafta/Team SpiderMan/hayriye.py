@@ -199,6 +199,14 @@ while running:
             mouse_pressed = pygame.mouse.get_pressed()
             pencere1.fill(siyah)
             pencere1.blit(arka_plan1,(0,0))
+#oyuncunun cidigimiz sinirlarda kalmasi icin
+            if oyuncu.rect.x < 300:
+                oyuncu.rect.x = 300
+            if oyuncu.jump != True:
+                if oyuncu.rect.bottom <500:
+                    oyuncu.rect.bottom = 500
+                if oyuncu.rect.bottom >580:
+                    oyuncu.rect.bottom = 580
 #kopek hareketi
             if kopekYon == 'right' and kopekC.x < 650:
                 kopekC.x += 1
@@ -343,6 +351,8 @@ while running:
                             pygame.display.update()
 #sifreyi bulmak icin anahtara temas edecek
                     if oyuncu.rect.colliderect(anahtar3C):
+                        pygame.mixer.music.load("keyses.wav")
+                        pygame.mixer.music.play(1,0.0)
                         sifre = YaziEkle(650,100,kirmizi,None,'Oda numaran 103',32)
                         sifre.draw(pencere2)
                     skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
@@ -460,7 +470,7 @@ while running:
                                 money5C.topleft = (700,500)
 
 # hosgeldin yazisi
-                                hosgeldin_yazi = YaziEkle(450,100,beyaz,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
+                                hosgeldin_yazi = YaziEkle(450,100,koyu_mavi,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
                                 goblin = pygame.image.load('goblinsag.png')
                                 goblinC= goblin.get_rect()
                                 goblinC.bottomright = (610,600)
