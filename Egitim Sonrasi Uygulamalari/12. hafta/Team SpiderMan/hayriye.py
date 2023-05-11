@@ -141,6 +141,10 @@ input_box = pygame.Rect(430, 500, 140, 32)
 kullanici = ''
 #Ana ekrandaki (oyuncu adi: ) yazisini olusturduk.
 oyuncu_adi = YaziEkle(400,450,gumus,None,'Oyuncu Adı: ',32)
+#ana ekrana oyun tabelasi olusturduk
+tabela = pygame.image.load('tabela.png')
+tabelaC = tabela.get_rect()
+tabelaC.center = (genislik/2,100)
 ############### ANA OYUN DONGUMUZ ###############
 running = True
 while running:
@@ -169,6 +173,8 @@ while running:
     pygame.draw.rect(screen, gumus, input_box, 2)
 #oyuncu adi yazisini ekrana ekledik.
     oyuncu_adi.draw(screen)
+#tabelayi ekrana cizdik
+    screen.blit(tabela,tabelaC)
 #mouse pozisyonunu ve mouse basilip basilmadigi bilgilerini aldik.
     mouse_pos = pygame.mouse.get_pos()
     mouse_pressed = pygame.mouse.get_pressed()
