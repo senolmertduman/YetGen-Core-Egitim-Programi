@@ -58,6 +58,8 @@ class Button:
 play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'cloud.png', "PLAY GAME")
 #game over ekranindaki oyuna yeniden donus icin replay replay butonunu olusturduk
 replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'cloud2.png', "REPLAY GAME")
+#win ekraninda oyuna donus icin replay butonu olusturduk
+replay_button2 = Button(400, 470, 200, 100, beyaz, gumus,'cloud.png', "REPLAY GAME")
 ###YAZI EKLEME SINIFI###
 class YaziEkle:
 #bu sinif vasitasi ile ekranda istedigimiz yere kolaylikla yazi ekleyebilecegiz.
@@ -85,15 +87,27 @@ class Oyuncu(pygame.sprite.Sprite):
         self.hiz = 10
         self.jump = False
         self.jumpC = 10  
+        self.adim = False
     def update(self):
         tus = pygame.key.get_pressed()
 #saga,sola,yukari ve asagi hareket
         if tus[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.hiz
             self.image = pygame.image.load('hayriyesol.png')
+            if self.adim == False:
+                self.image = pygame.image.load('hayriyesol.png')
+                self.adim = True
+            elif self.adim == True:
+                self.image = pygame.image.load('hayriyesol1.png')
+                self.adim = False
         elif tus[pygame.K_RIGHT] and self.rect.right < 1000:
             self.rect.x += self.hiz
-            self.image = pygame.image.load('hayriyesag.png')
+            if self.adim == False:
+                self.image = pygame.image.load('hayriyesag.png')
+                self.adim = True
+            elif self.adim == True:
+                self.image = pygame.image.load('hayriyesag1.png')
+                self.adim = False
         elif tus[pygame.K_UP] and self.rect.bottom > 400:
             self.rect.y -= self.hiz
         elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
@@ -347,12 +361,13 @@ while running:
                         orumcekC = orumcek.get_rect()
                         orumcekC.topleft = (300,400)
 #orumcek hareketi icin yon belirledik
-                        orumcekYon = 'up'
-
+                        orumcekYon = 'up' 
                         su_birikintisi = pygame.image.load('puddle.png')
                         su_birikintisiC = su_birikintisi.get_rect()
                         su_birikintisiC.topleft = (600,500)
-                        
+                        money4 = pygame.image.load('money.png')
+                        money4C = money2.get_rect()
+                        money4C.topleft = (700,500)
                         running3 = True
                         while running3:
                             for event in pygame.event.get():
@@ -365,6 +380,10 @@ while running:
                             mouse_pressed = pygame.mouse.get_pressed()
                             pencere3.fill(siyah)
                             pencere3.blit(arka_plan3,(0,0))
+#oyuncu paraya temas ederse
+                            if oyuncu.rect.colliderect(money4C):
+                                point += 1
+                                money4C.topleft = (1100,700)
 #oyuncu muza temas ederse 100 pixel ileri kayacak
                             if oyuncu.rect.colliderect(muzC):
                                 oyuncu.rect.x +=100
@@ -410,6 +429,7 @@ while running:
                             pencere3.blit(su_birikintisi,su_birikintisiC)
                             pencere3.blit(muz,muzC)
                             pencere3.blit(orumcek,orumcekC)
+                            pencere3.blit(money4,money4C)
                             skor.draw(pencere3)
                             oyuncu_grup.draw(pencere3)
                             oyuncu_grup.update()
@@ -420,7 +440,11 @@ while running:
                                 oyuncu.rect.bottom = 520
                                 oyuncu.rect.centerx = 100
                                 pencere4 = pygame.display.set_mode((genislik,yukseklik))
-                                arka_plan4 = pygame.image.load('pencere4.jpeg')              
+                                arka_plan4 = pygame.image.load('pencere4.jpeg')
+                                money5 = pygame.image.load('money.png')
+                                money5C = money2.get_rect()
+                                money5C.topleft = (700,500)
+
 # hosgeldin yazisi
                                 hosgeldin_yazi = YaziEkle(450,100,beyaz,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
                                 goblin = pygame.image.load('goblinsag.png')
@@ -451,8 +475,10 @@ while running:
                                         if goblinC.x == 500:
                                             goblinYon = 'right'
                                             goblin = pygame.image.load('goblinsag.png')
-                                    
-
+#oyuncu paraya temas ederse
+                                    if oyuncu.rect.colliderect(money5C):
+                                        point += 1
+                                        money5C.topleft = (1100,700)
 #oyuncu gobline temas ederse
                                     if oyuncu.rect.colliderect(goblinC):
                                         point = 0
@@ -483,9 +509,60 @@ while running:
                                                 running4 = False
                                                 running_goblin = False
                                             pygame.display.update()
-
+#oyuncu oda kapisina temas ederse kazanacak
+                                    if oyuncu.rect.colliderect((890,180,100,200)):
+                                        pencere_win = pygame.display.set_mode((genislik,yukseklik))
+                                        arkaplan_win = pygame.image.load('win.jpeg')
+                                        yildiz1 = pygame.image.load('star2.png')
+                                        yildiz1C = yildiz1.get_rect()
+                                        yildiz1C.topleft = (250,20)
+                                        yildiz2 = pygame.image.load('star2.png')
+                                        yildiz2C = yildiz2.get_rect()
+                                        yildiz2C.topleft = (450,20)
+                                        yildiz3 = pygame.image.load('star2.png')
+                                        yildiz3C = yildiz3.get_rect()
+                                        yildiz3C.topleft = (650,20)
+                                        running_win = True
+                                        while running_win:
+                                            for event in pygame.event.get():
+                                                if event.type == pygame.QUIT:
+                                                    running = False
+                                                    running1 = False
+                                                    running2 = False
+                                                    running3 = False
+                                                    running4 = False
+                                                    running_win = False
+                                            pencere_win.fill(kirmizi)
+                                            pencere_win.blit(arkaplan_win,(0,0))
+                                            replay_button2.draw(pencere_win)
+                                            pencere_win.blit(yildiz1,yildiz1C)
+                                            pencere_win.blit(yildiz2,yildiz2C)
+                                            pencere_win.blit(yildiz3,yildiz3C)
+#topladigi altinlara gore win ekraninda kac yildiz aldigi gorunecek
+                                            if point == 5:
+                                                yildiz1 = pygame.image.load('star.png')
+                                                yildiz2 = pygame.image.load('star.png')
+                                                yildiz3 = pygame.image.load('star.png')
+                                            elif point >= 3:
+                                                yildiz1 = pygame.image.load('star.png')
+                                                yildiz2 = pygame.image.load('star.png')
+                                            elif point >= 1:
+                                                yildiz1 = pygame.image.load('star.png')
+                                            mouse_pos = pygame.mouse.get_pos()
+                                            mouse_pressed = pygame.mouse.get_pressed()                                     
+                                            if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
+                                                point = 0
+                                                oyuncu.rect.bottom = 520
+                                                oyuncu.rect.centerx = 350 
+                                                running1 = False
+                                                running2 = False
+                                                running3 = False
+                                                running4 = False
+                                                running_win = False
+                                            pygame.display.update()
                                     skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
                                     skor.draw(pencere4)
+                                    pencere4.blit(money5,money5C)
                                     pencere4.blit(goblin,goblinC)
                                     hosgeldin_yazi.draw(pencere4)
                                     oyuncu_grup.draw(pencere4)
