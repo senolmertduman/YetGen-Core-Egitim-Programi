@@ -1,5 +1,18 @@
 import pygame
+import sys
 from pygame.locals import *
+# oyuna baslamak icin kullanici terminalden 1 e basmali. Aksi takdirde oyun calismayacak.
+#hata kontrolunu burada yaptik giris 1 e esit olmayinca hata vermeden oyunu sonlandiracak.
+giris = input("Lutfen oyunu baslatmak icin herhangi bir sayiya basin: ")
+try:
+    if giris == '1':
+        giris = int(giris)
+    else:
+        print("Lutfen oyuna baslamak icin 1'e basin")
+        sys.exit()
+except:
+    print("Lutfen oyuna baslamak icin 1'e basin")
+    sys.exit()
 # Pygame modüllerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
 # Pencere boyutunu ayarladik
@@ -59,7 +72,7 @@ play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'cloud.png', "
 #game over ekranindaki oyuna yeniden donus icin replay replay butonunu olusturduk
 replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'cloud2.png', "REPLAY GAME")
 #win ekraninda oyuna donus icin replay butonu olusturduk
-replay_button2 = Button(400, 470, 200, 100, beyaz, gumus,'cloud.png', "REPLAY GAME")
+replay_button2 = Button(400, 470, 200, 100, beyaz, acik_deniz_yesili,'cloud.png', "REPLAY GAME")
 ###YAZI EKLEME SINIFI###
 class YaziEkle:
 #bu sinif vasitasi ile ekranda istedigimiz yere kolaylikla yazi ekleyebilecegiz.
