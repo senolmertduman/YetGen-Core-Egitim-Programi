@@ -423,7 +423,10 @@ while running:
                                 arka_plan4 = pygame.image.load('pencere4.jpeg')              
 # hosgeldin yazisi
                                 hosgeldin_yazi = YaziEkle(450,100,beyaz,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
-                    
+                                goblin = pygame.image.load('goblinsag.png')
+                                goblinC= goblin.get_rect()
+                                goblinC.bottomright = (610,600)
+                                goblinYon = 'right'
                                 running4 = True
                                 while running4:
                                     for event in pygame.event.get():
@@ -437,8 +440,53 @@ while running:
                                     mouse_pressed = pygame.mouse.get_pressed()
                                     pencere4.fill(siyah)
                                     pencere4.blit(arka_plan4,(0,0))
+#goblin hareketi
+                                    if goblinYon == 'right' and goblinC.x < 1000:
+                                        goblinC.x += 1
+                                        if goblinC.x == 1000:
+                                            goblinYon = 'left'
+                                            goblin = pygame.image.load('goblinsol.png')
+                                    elif goblinYon == 'left' and goblinC.x > 500:
+                                        goblinC.x-= 1
+                                        if goblinC.x == 500:
+                                            goblinYon = 'right'
+                                            goblin = pygame.image.load('goblinsag.png')
+                                    
+
+#oyuncu gobline temas ederse
+                                    if oyuncu.rect.colliderect(goblinC):
+                                        point = 0
+                                        yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
+                                        pencere_go = pygame.display.set_mode((genislik,yukseklik))
+                                        
+                                        running_goblin = True
+                                        while running_goblin:
+                                            for event in pygame.event.get():
+                                                if event.type == pygame.QUIT:
+                                                    running = False
+                                                    running1 = False
+                                                    running2 = False
+                                                    running3 = False
+                                                    running4 = False
+                                                    running_goblin = False
+                                            pencere_go.fill(kirmizi)
+                                            replay_button.draw(pencere_go)
+                                            mouse_pos = pygame.mouse.get_pos()
+                                            mouse_pressed = pygame.mouse.get_pressed()
+                                            yazi.draw(pencere_go)
+                                            if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
+                                                oyuncu.rect.bottom = 520
+                                                oyuncu.rect.centerx = 350 
+                                                running1 = False
+                                                running2 = False
+                                                running3 = False
+                                                running4 = False
+                                                running_goblin = False
+                                            pygame.display.update()
+
                                     skor = YaziEkle(0,0,siyah,gumus,f'Skor: {point}',32)
                                     skor.draw(pencere4)
+                                    pencere4.blit(goblin,goblinC)
                                     hosgeldin_yazi.draw(pencere4)
                                     oyuncu_grup.draw(pencere4)
                                     oyuncu_grup.update()
