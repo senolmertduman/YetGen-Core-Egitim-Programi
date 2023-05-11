@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 # oyuna baslamak icin kullanici terminalden 1 e basmali. Aksi takdirde oyun calismayacak.
 #hata kontrolunu burada yaptik giris 1 e esit olmayinca hata vermeden oyunu sonlandiracak.
-giris = input("Lutfen oyunu baslatmak icin herhangi bir sayiya basin: ")
+giris = input("Lutfen oyunu baslatmak icin 1'e basin: ")
 try:
     if giris == '1':
         giris = int(giris)
