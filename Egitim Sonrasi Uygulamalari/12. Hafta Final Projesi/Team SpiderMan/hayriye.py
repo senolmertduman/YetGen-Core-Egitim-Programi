@@ -1,18 +1,7 @@
 import pygame
-import sys
 from pygame.locals import *
-# oyuna baslamak icin kullanici terminalden 1 e basmali. Aksi takdirde oyun calismayacak.
-#hata kontrolunu burada yaptik giris 1 e esit olmayinca hata vermeden oyunu sonlandiracak.
-giris = input("Lutfen oyunu baslatmak icin 1'e basin: ")
-try:
-    if giris == '1':
-        giris = int(giris)
-    else:
-        print("Lutfen oyuna baslamak icin 1'e basin")
-        sys.exit()
-except:
-    print("Lutfen oyuna baslamak icin 1'e basin")
-    sys.exit()
+from oyuncu import Oyuncu
+
 # Pygame modüllerini kullanabilmek icin init() fonksiyonunu yazdik.
 pygame.init()
 # Pencere boyutunu ayarladik
@@ -68,11 +57,11 @@ class Button:
         text_rect = text.get_rect(center=self.rect.center)
         surface.blit(text, text_rect)
 # ana ekranda oyuna baslayacagimiz play butonunu olusturduk
-play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'cloud.png', "PLAY GAME")
+play_button = Button(250, 250, 500, 100, acik_deniz_yesili, gumus,'images/cloud.png', "PLAY GAME")
 #game over ekranindaki oyuna yeniden donus icin replay replay butonunu olusturduk
-replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'cloud2.png', "REPLAY GAME")
+replay_button = Button(250, 370, 500, 100, kirmizi, gumus,'images/cloud2.png', "REPLAY GAME")
 #win ekraninda oyuna donus icin replay butonu olusturduk
-replay_button2 = Button(400, 470, 200, 100, beyaz, acik_deniz_yesili,'cloud.png', "REPLAY GAME")
+replay_button2 = Button(400, 470, 200, 100, beyaz, acik_deniz_yesili,'images/cloud.png', "REPLAY GAME")
 ###YAZI EKLEME SINIFI###
 class YaziEkle:
 #bu sinif vasitasi ile ekranda istedigimiz yere kolaylikla yazi ekleyebilecegiz.
@@ -90,55 +79,7 @@ class YaziEkle:
         surface.blit(text, text_rect)
 
 #########OYUNCU SINIFI####
-class Oyuncu(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load('hayriyesag.png')
-        self.rect = self.image.get_rect()
-        self.rect.bottom = 520
-        self.rect.centerx = 350
-        self.hiz = 10
-        self.jump = False
-        self.jumpC = 10  
-        self.adim = False
-    def update(self):
-        tus = pygame.key.get_pressed()
-#saga,sola,yukari ve asagi hareket
-        if tus[pygame.K_LEFT] and self.rect.left > 0:
-            self.rect.x -= self.hiz
-            self.image = pygame.image.load('hayriyesol.png')
-            if self.adim == False:
-                self.image = pygame.image.load('hayriyesol.png')
-                self.adim = True
-            elif self.adim == True:
-                self.image = pygame.image.load('hayriyesol1.png')
-                self.adim = False
-        elif tus[pygame.K_RIGHT] and self.rect.right < 1000:
-            self.rect.x += self.hiz
-            if self.adim == False:
-                self.image = pygame.image.load('hayriyesag.png')
-                self.adim = True
-            elif self.adim == True:
-                self.image = pygame.image.load('hayriyesag1.png')
-                self.adim = False
-        elif tus[pygame.K_UP] and self.rect.bottom > 400:
-            self.rect.y -= self.hiz
-        elif tus[pygame.K_DOWN] and self.rect.bottom < 600:
-            self.rect.y += self.hiz
-#ziplama fonksiyonu
-        if self.jump == False:
-            if tus[pygame.K_SPACE]:
-                self.jump = True
-        else:
-            oyuncu.image = pygame.image.load('hayriyezipla.png')
-            if self.jumpC >= -10:
-                self.rect.y -= (self.jumpC * abs(self.jumpC)) * 0.5
-                self.jumpC -= 1
-            else:
-                self.jump = False
-                oyuncu.image = pygame.image.load('hayriyesag.png')
-                self.jumpC = 10
-                self.rect.bottom = 520
+
 #puanlari saymasi icin bir puan degiskeni olusturduk.
 point = 0
 #oyuncu sinifimizdan bir karakter olusturduk
@@ -155,7 +96,7 @@ kullanici = ''
 #Ana ekrandaki (oyuncu adi: ) yazisini olusturduk.
 oyuncu_adi = YaziEkle(400,450,gumus,None,'Oyuncu Adı: ',32)
 #ana ekrana oyun tabelasi olusturduk
-tabela = pygame.image.load('tabela.png')
+tabela = pygame.image.load('images/tabela.png')
 tabelaC = tabela.get_rect()
 tabelaC.center = (genislik/2,100)
 ############### ANA OYUN DONGUMUZ ###############
@@ -195,16 +136,16 @@ while running:
 # Amacimiz bu kod blogu calistiginda oyunun ilk penceresi calissin.
     if mouse_pressed[0] and play_button.rect.collidepoint(mouse_pos):
 ####### 1. PENCERE ##########
-        kopek = pygame.image.load('dog.png')
+        kopek = pygame.image.load('images/dog.png')
         kopekC = kopek.get_rect()
-        money = pygame.image.load('money.png')
+        money = pygame.image.load('images/money.png')
         moneyC = money.get_rect()
         moneyC.bottom = 520
         moneyC.centerx = 650 
         kopekC.bottom = 520
         kopekC.centerx = 550 
         pencere1 = pygame.display.set_mode((genislik,yukseklik))
-        arka_plan1 = pygame.image.load('pencere1.jpeg')
+        arka_plan1 = pygame.image.load('images/pencere1.jpeg')
 #kopek hareketi icin yon belirledik
         kopekYon = 'left'
         
@@ -231,15 +172,15 @@ while running:
                 kopekC.x += 1
                 if kopekC.x == 650:
                     kopekYon = 'left'
-                    kopek = pygame.image.load('dog.png')
+                    kopek = pygame.image.load('images/dog.png')
             elif kopekYon == 'left' and kopekC.x > 400:
                 kopekC.x-= 1
                 if kopekC.x == 400:
                     kopekYon = 'right'
-                    kopek = pygame.image.load('dog2.png')
+                    kopek = pygame.image.load('images/dog2.png')
 #Oyuncu kopege temas ederse game over penceresi acilacak
             if oyuncu.rect.colliderect(kopekC):
-                pygame.mixer.music.load("gameoverses.wav")
+                pygame.mixer.music.load("audios/gameoverses.wav")
                 pygame.mixer.music.play(1,0.0)
                 point = 0
                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
@@ -265,7 +206,7 @@ while running:
                     pygame.display.update()
 #oyuncu paraya temas ederse puan 1 artacak   
             if oyuncu.rect.colliderect(moneyC):
-                pygame.mixer.music.load("odulses.wav")
+                pygame.mixer.music.load("audios/odulses.wav")
                 pygame.mixer.music.play(1,0.0)
                 point += 1
                 moneyC.topleft = (1100,700)
@@ -283,22 +224,22 @@ while running:
                 oyuncu.rect.bottom = 520
                 oyuncu.rect.centerx = 100
                 pencere2 = pygame.display.set_mode((genislik,yukseklik))
-                arka_plan2 = pygame.image.load('pencere2.jpeg')
-                temizlikci = pygame.image.load('temizlikcisol.png')
+                arka_plan2 = pygame.image.load('images/pencere2.jpeg')
+                temizlikci = pygame.image.load('images/temizlikcisol.png')
                 temizlikciC = temizlikci.get_rect()
                 temizlikciC.topleft = (700,400) 
-                money2 = pygame.image.load('money.png')
+                money2 = pygame.image.load('images/money.png')
                 money2C = money2.get_rect()
                 money2C.topleft = (360,400)
-                money3 = pygame.image.load('money.png')
+                money3 = pygame.image.load('images/money.png')
                 money3C = money3.get_rect()
                 money3C.topleft = (700,400)
 #temizlikci hareketi icin yon belirledik
                 temizliciYon = 'left'
 
-                anahtar1 = pygame.image.load('key.png')
-                anahtar2 = pygame.image.load('key.png')
-                anahtar3 = pygame.image.load('key.png')
+                anahtar1 = pygame.image.load('images/key.png')
+                anahtar2 = pygame.image.load('images/key.png')
+                anahtar3 = pygame.image.load('images/key.png')
                 anahtar1C = anahtar1.get_rect()
                 anahtar1C.topleft = (100,300)
                 anahtar2C = anahtar2.get_rect()
@@ -321,12 +262,12 @@ while running:
                     pencere2.blit(arka_plan2,(0,0))
 #paraya temas
                     if oyuncu.rect.colliderect(money2C):
-                        pygame.mixer.music.load("odulses.wav")
+                        pygame.mixer.music.load("audios/odulses.wav")
                         pygame.mixer.music.play(1,0.0)
                         point += 1
                         money2C.topleft = (1100,700)
                     if oyuncu.rect.colliderect(money3C):
-                        pygame.mixer.music.load("odulses.wav")
+                        pygame.mixer.music.load("audios/odulses.wav")
                         pygame.mixer.music.play(1,0.0)
                         point += 1
                         money3C.topleft = (1100,700)
@@ -335,15 +276,15 @@ while running:
                         temizlikciC.x += 1
                         if temizlikciC.x == 800:
                             temizliciYon = 'left'
-                            temizlikci = pygame.image.load('temizlikcisol.png')
+                            temizlikci = pygame.image.load('images/temizlikcisol.png')
                     elif temizliciYon == 'left' and temizlikciC.x > 600:
                         temizlikciC.x-= 1
                         if temizlikciC.x == 600:
                             temizliciYon = 'right'
-                            temizlikci = pygame.image.load('temizlikcisag.png')
+                            temizlikci = pygame.image.load('images/temizlikcisag.png')
 #Oyuncu temizlikciye temas ederse game over penceresi acilacak
                     if oyuncu.rect.colliderect(temizlikciC):
-                        pygame.mixer.music.load("gameoverses.wav")
+                        pygame.mixer.music.load("audios/gameoverses.wav")
                         pygame.mixer.music.play(1,0.0)
                         point = 0
                         yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
@@ -370,7 +311,7 @@ while running:
                             pygame.display.update()
 #sifreyi bulmak icin anahtara temas edecek
                     if oyuncu.rect.colliderect(anahtar3C):
-                        pygame.mixer.music.load("keyses.wav")
+                        pygame.mixer.music.load("audios/keyses.wav")
                         pygame.mixer.music.play(1,0.0)
                         sifre = YaziEkle(650,100,kirmizi,None,'Oda numaran 103',32)
                         sifre.draw(pencere2)
@@ -392,19 +333,19 @@ while running:
                         oyuncu.rect.bottom = 520
                         oyuncu.rect.centerx = 100
                         pencere3 = pygame.display.set_mode((genislik,yukseklik))
-                        arka_plan3 = pygame.image.load('pencere3.jpeg')
-                        muz = pygame.image.load('banana.png')
+                        arka_plan3 = pygame.image.load('images/pencere3.jpeg')
+                        muz = pygame.image.load('images/banana.png')
                         muzC = muz.get_rect()
                         muzC.topleft = (200,400)
-                        orumcek = pygame.image.load('spider.png')
+                        orumcek = pygame.image.load('images/spider.png')
                         orumcekC = orumcek.get_rect()
                         orumcekC.topleft = (300,400)
 #orumcek hareketi icin yon belirledik
                         orumcekYon = 'up' 
-                        su_birikintisi = pygame.image.load('puddle.png')
+                        su_birikintisi = pygame.image.load('images/puddle.png')
                         su_birikintisiC = su_birikintisi.get_rect()
                         su_birikintisiC.topleft = (600,500)
-                        money4 = pygame.image.load('money.png')
+                        money4 = pygame.image.load('images/money.png')
                         money4C = money2.get_rect()
                         money4C.topleft = (700,500)
                         running3 = True
@@ -421,7 +362,7 @@ while running:
                             pencere3.blit(arka_plan3,(0,0))
 #oyuncu paraya temas ederse
                             if oyuncu.rect.colliderect(money4C):
-                                pygame.mixer.music.load("odulses.wav")
+                                pygame.mixer.music.load("audios/odulses.wav")
                                 pygame.mixer.music.play(1,0.0)
                                 point += 1
                                 money4C.topleft = (1100,700)
@@ -433,15 +374,15 @@ while running:
                                 orumcekC.y -= 1
                                 if orumcekC.y == 350:
                                     orumcekYon = 'down'
-                                    orumcek = pygame.image.load('spider2.png')
+                                    orumcek = pygame.image.load('images/spider2.png')
                             elif orumcekYon == 'down' and orumcekC.y < 600:
                                 orumcekC.y += 1
                                 if orumcekC.y == 550:
                                     orumcekYon = 'up'
-                                    orumcek = pygame.image.load('spider.png')
+                                    orumcek = pygame.image.load('images/spider.png')
 # oyuncu orumcege temas ederse
                             if oyuncu.rect.colliderect(orumcekC):
-                                pygame.mixer.music.load("gameoverses.wav")
+                                pygame.mixer.music.load("audios/gameoverses.wav")
                                 pygame.mixer.music.play(1,0.0)
                                 point = 0
                                 yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
@@ -483,14 +424,14 @@ while running:
                                 oyuncu.rect.bottom = 520
                                 oyuncu.rect.centerx = 100
                                 pencere4 = pygame.display.set_mode((genislik,yukseklik))
-                                arka_plan4 = pygame.image.load('pencere4.jpeg')
-                                money5 = pygame.image.load('money.png')
+                                arka_plan4 = pygame.image.load('images/pencere4.jpeg')
+                                money5 = pygame.image.load('images/money.png')
                                 money5C = money2.get_rect()
                                 money5C.topleft = (700,500)
 
 # hosgeldin yazisi
                                 hosgeldin_yazi = YaziEkle(450,100,koyu_mavi,None,f'Odana Hosgeldin {kullanici.capitalize()}',32)
-                                goblin = pygame.image.load('goblinsag.png')
+                                goblin = pygame.image.load('images/goblinsag.png')
                                 goblinC= goblin.get_rect()
                                 goblinC.bottomright = (610,600)
                                 goblinYon = 'right'
@@ -512,21 +453,21 @@ while running:
                                         goblinC.x += 1
                                         if goblinC.x == 1000:
                                             goblinYon = 'left'
-                                            goblin = pygame.image.load('goblinsol.png')
+                                            goblin = pygame.image.load('images/goblinsol.png')
                                     elif goblinYon == 'left' and goblinC.x > 500:
                                         goblinC.x-= 1
                                         if goblinC.x == 500:
                                             goblinYon = 'right'
-                                            goblin = pygame.image.load('goblinsag.png')
+                                            goblin = pygame.image.load('images/goblinsag.png')
 #oyuncu paraya temas ederse
                                     if oyuncu.rect.colliderect(money5C):
-                                        pygame.mixer.music.load("odulses.wav")
+                                        pygame.mixer.music.load("audios/odulses.wav")
                                         pygame.mixer.music.play(1,0.0)
                                         point += 1
                                         money5C.topleft = (1100,700)
 #oyuncu gobline temas ederse
                                     if oyuncu.rect.colliderect(goblinC):
-                                        pygame.mixer.music.load("gameoverses.wav")
+                                        pygame.mixer.music.load("audios/gameoverses.wav")
                                         pygame.mixer.music.play(1,0.0)
                                         point = 0
                                         yazi = YaziEkle(300,200,siyah,None,'GAME OVER!',64)
@@ -558,17 +499,17 @@ while running:
                                             pygame.display.update()
 #oyuncu oda kapisina temas ederse kazanacak
                                     if oyuncu.rect.colliderect((890,180,100,200)):
-                                        pygame.mixer.music.load("winses.wav")
+                                        pygame.mixer.music.load("audios/winses.wav")
                                         pygame.mixer.music.play(1,0.0)
                                         pencere_win = pygame.display.set_mode((genislik,yukseklik))
-                                        arkaplan_win = pygame.image.load('win.jpeg')
-                                        yildiz1 = pygame.image.load('star2.png')
+                                        arkaplan_win = pygame.image.load('images/win.jpeg')
+                                        yildiz1 = pygame.image.load('images/star2.png')
                                         yildiz1C = yildiz1.get_rect()
                                         yildiz1C.topleft = (250,20)
-                                        yildiz2 = pygame.image.load('star2.png')
+                                        yildiz2 = pygame.image.load('images/star2.png')
                                         yildiz2C = yildiz2.get_rect()
                                         yildiz2C.topleft = (450,20)
-                                        yildiz3 = pygame.image.load('star2.png')
+                                        yildiz3 = pygame.image.load('images/star2.png')
                                         yildiz3C = yildiz3.get_rect()
                                         yildiz3C.topleft = (650,20)
                                         running_win = True
@@ -589,14 +530,14 @@ while running:
                                             pencere_win.blit(yildiz3,yildiz3C)
 #topladigi altinlara gore win ekraninda kac yildiz aldigi gorunecek
                                             if point == 5:
-                                                yildiz1 = pygame.image.load('star.png')
-                                                yildiz2 = pygame.image.load('star.png')
-                                                yildiz3 = pygame.image.load('star.png')
+                                                yildiz1 = pygame.image.load('images/star.png')
+                                                yildiz2 = pygame.image.load('images/star.png')
+                                                yildiz3 = pygame.image.load('images/star.png')
                                             elif point >= 3:
-                                                yildiz1 = pygame.image.load('star.png')
-                                                yildiz2 = pygame.image.load('star.png')
+                                                yildiz1 = pygame.image.load('images/star.png')
+                                                yildiz2 = pygame.image.load('images/star.png')
                                             elif point >= 1:
-                                                yildiz1 = pygame.image.load('star.png')
+                                                yildiz1 = pygame.image.load('images/star.png')
                                             mouse_pos = pygame.mouse.get_pos()
                                             mouse_pressed = pygame.mouse.get_pressed()                                     
                                             if mouse_pressed[0] and replay_button.rect.collidepoint(mouse_pos):
